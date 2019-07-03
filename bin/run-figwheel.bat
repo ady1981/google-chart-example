@@ -1,0 +1,2 @@
+cd ..
+lein figwheel

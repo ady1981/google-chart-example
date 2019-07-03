@@ -1,5 +1,13 @@
 (ns google-chart-example.core
-    (:require [reagent.core :as reagent :refer [atom]]))
+  (:require-macros
+    [google-chart-example.macros :as m])
+  (:require
+    [clojure.tools.reader :as reader]
+    [reagent.core :as reagent :refer [atom]]))
+
+
+(def prices
+  (reader/read-string (m/load-edn "data/prices_sample.edn")))
 
 (enable-console-print!)
 
@@ -7,10 +15,8 @@
   (reagent/atom 3))
 
 (def some-data
-  (reagent/atom [["Day", "Clicks"],
-                 [1 12000]
-                 [2 35000]
-                 [3 44000]]))
+  (let [data (->> prices :prices (map-indexed (fn [idx {:keys [v to]}] [(inc idx) v])))]
+    (reagent/atom (into [["#", "Price"]] data))))
 
 (defonce ready?
   (reagent/atom false))
